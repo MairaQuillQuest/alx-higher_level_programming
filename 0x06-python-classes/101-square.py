@@ -3,44 +3,17 @@
 # Maira Wangui
 
 class Square:
-    """ A class that defines a square by its size
+    """ A class that defines a square by its size and position
     """
-    def __eq__(self, other):
-        return self.__size == other.__size
-
-    def __lt__(self, other):
-        return self.__size < other.__size
-
-    def __le__(self, other):
-        return self.__size <= other.__size
-
-    def __ne__(self, other):
-        return self.__size != other.__size
-
-    def __gt__(self, other):
-        return self.__size > other.__size
-
-    def __ge__(self, other):
-        return self.__size >= other.__size
-
-    def __init__(self, size=0):
-        """ Method to initialize the square object
+    def __init__(self, size=0, position=(0, 0)):
+        """ Method to initialize the square object with size and position
         """
-        if not isinstance(size, int):
-            raise TypeError("size must be an integer")
-        elif size < 0:
-            raise ValueError("size must be >= 0")
-        else:
-            self.__size = size
-
-    def area(self):
-        """ Method that returns the square are of the object
-        """
-        return (self.__size ** 2)
+        self.size = size
+        self.position = position
 
     @property
     def size(self):
-        """ Method to returns the size value
+        """ Method to retrieve the size value
         """
         return self.__size
 
@@ -54,3 +27,36 @@ class Square:
             raise ValueError("size must be >= 0")
         else:
             self.__size = value
+
+    @property
+    def position(self):
+        """ Method to retrieve the position value
+        """
+        return self.__position
+
+    @position.setter
+    def position(self, value):
+        """ Method to set the position value of the square object
+        """
+        if (not isinstance(value, tuple) or len(value) != 2 or
+                not all(isinstance(i, int) for i in value) or
+                any(i < 0 for i in value)):
+            raise TypeError("position must be a tuple of 2 positive integers")
+        else:
+            self.__position = value
+
+    def area(self):
+        """ Method that returns the square area of the object
+        """
+        return self.__size ** 2
+
+    def my_print(self):
+        """ Method that prints the square with the character #
+        """
+        if self.__size == 0:
+            print()
+        else:
+            for _ in range(self.__position[1]):
+                print()
+            for _ in range(self.__size):
+                print(" " * self.__position[0] + "#" * self.__size)
