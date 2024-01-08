@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 # 0-lookup.py
-# Maira Wangui 
+# Maira Wangui
 """Defines an object attribute lookup function."""
 
 
