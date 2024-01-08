@@ -1,50 +1,95 @@
 # 1-my_list.txt
 # Maira Wangui
-The ``Print Sorted List`` module
-================================
+# run test with python3 -m doctest -v ./tests/[filename].txt
 
-Using ``MyList``
-----------------
+First import method to test
+     >>> MyList = __import__('1-my_list').MyList
 
-This is an example text file in reStructuredText format.
-First import ``MyList`` from the ``1-my_list`` module:
+Checking Documentation Exists:
+     >>> module_documentation = __import__("1-my_list").__doc__
+     >>> print(len(module_documentation) > 0)
+     True
 
-    >>> MyList = __import__("1-my_list").MyList
+Checking for class docstring:
+     >>> class_documentation = __import__("1-my_list").MyList.__doc__
+     >>> print(len(class_documentation) > 0)
+     True
 
-Now use it:
+Checking for method docstring:
+     >>> function_documentation = __import__("1-my_list").MyList.print_sorted.__doc__
+     >>> print(len(function_documentation) > 0)
+     True
 
-    >>> a = MyList()
-    >>> a
-    []
+Checking that MyList inherits form list:
+     >>> issubclass(MyList, list)
+     True
 
-    >>> a.append(1)
-    >>> a
-    [1]
+Test type, isinstance, issubclass:
+     >>> type(MyList())
+     <class '1-my_list.MyList'>
 
-    >>> a.append(5)
-    >>> a.append(3)
-    >>> a
-    [1, 5, 3]
+     >>> isinstance(MyList, object)
+     True
 
-    >>> a.print_sorted()
-    [1, 3, 5]
+     >>> isinstance(MyList, list)
+     False
 
-    >>> a.append("b")
-    >>> a
-    [1, 5, 3, 'b']
+     >>> issubclass(MyList, list)
+     True
 
-    >>> a.print_sorted()
-    Traceback (most recent call last):
-        ...
-    TypeError: unorderable types: str() < int()
+     >>> 'print_sorted' in dir(MyList)
+     True
 
-    >>> b = MyList()
-    >>> b.append(5)
-    >>> b.append(-2)
-    >>> b.append(0)
-    >>> b.append(3)
-    >>> b
-    [5, -2, 0, 3]
+SUCCESS CASES:
 
-    >>> b.print_sorted()
-    [-2, 0, 3, 5]
+Test ints (program assumes all elements will be type int):
+     >>> my_list = MyList()
+     >>> my_list.append(3)
+     >>> my_list.append(50)
+     >>> my_list.append(-1)
+     >>> print(my_list)
+     [3, 50, -1]
+     >>> my_list.print_sorted()
+     [-1, 3, 50]
+     >>> print(my_list)
+     [3, 50, -1]
+
+     >>> another_list = MyList()
+     >>> another_list.append(300)
+     >>> another_list.append(50)
+     >>> another_list.append(-1)
+     >>> print(another_list)
+     [300, 50, -1]
+     >>> another_list.print_sorted()
+     [-1, 50, 300]
+     >>> print(another_list)
+     [300, 50, -1]
+
+     >>> l = MyList()
+     >>> l.append(-300)
+     >>> l.append(50)
+     >>> l.append(-1)
+     >>> print(l)
+     [-300, 50, -1]
+     >>> id(l) is not id(l.print_sorted())
+     [-300, -1, 50]
+     True
+
+Test list with only one element:
+     >>> solo = MyList()
+     >>> solo.append(-99999)
+     >>> print(solo)
+     [-99999]
+     >>> solo.print_sorted()
+     [-99999]
+     >>> print(solo)
+     [-99999]
+
+Test list with no elements:
+     >>> empty = MyList()
+     >>> print(empty)
+     []
+     >>> empty.print_sorted()
+     []
+
+FAIL CASES:
