@@ -13,13 +13,16 @@ format: File size: <total size>
 format: <status code (in ascending order)>: <number>
 """
 
+
 import sys
+
 
 def print_size_and_codes(size, stat_codes):
     print("File size: {:d}".format(size))
     for k, v in sorted(stat_codes.items()):
         if v:
             print("{:s}: {:d}".format(k, v))
+
 
 def parse_stdin_and_compute():
     size = 0
@@ -36,8 +39,10 @@ def parse_stdin_and_compute():
             if lines % 10 == 0:
                 print_size_and_codes(size, stat_codes)
     except KeyboardInterrupt:
+        print_size_and_codes(size, stat_codes)
         raise
 
-print_size_and_codes(size, stat_codes)
+    print_size_and_codes(size, stat_codes)
+
 
 parse_stdin_and_compute()
