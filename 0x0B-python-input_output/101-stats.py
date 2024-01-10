@@ -1,14 +1,28 @@
 #!/usr/bin/python3
 # 101-stats.py
 # Maira Wangui
+"""
+Script reads stdin line by line and computes metrics
+Input format:
+<IP Address> - [<date>] "GET /projects/260 HTTP/1.1" <status code> <file size>
+Each 10 lines and after a keyboard interruption (CTRL + C),
+prints those statistics since the beginning:
+total file size and
+possible status code: 200, 301, 400, 401, 403, 404, 405 and 500
+format: File size: <total size>
+format: <status code (in ascending order)>: <number>
+"""
+
 
 import sys
+
 
 def print_size_and_codes(size, stat_codes):
     print("File size: {:d}".format(size))
     for k, v in sorted(stat_codes.items()):
         if v:
             print("{:s}: {:d}".format(k, v))
+
 
 def parse_stdin_and_compute():
     size = 0
@@ -18,14 +32,7 @@ def parse_stdin_and_compute():
     try:
         for line in sys.stdin:
             fields = list(map(str, line.strip().split(" ")))
-
-            # Check if the last field is a valid integer
-            try:
-                size += int(fields[-1])
-            except ValueError:
-                print("Error: Invalid file size on line {}".format(lines + 1))
-                continue
-
+            size += int(fields[-1])
             if fields[-2] in stat_codes:
                 stat_codes[fields[-2]] += 1
             lines += 1
@@ -36,5 +43,6 @@ def parse_stdin_and_compute():
         raise
 
     print_size_and_codes(size, stat_codes)
+
 
 parse_stdin_and_compute()
