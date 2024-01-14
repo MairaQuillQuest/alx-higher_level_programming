@@ -6,9 +6,9 @@ In this project, I encapsulated skills in Python object-oriented programming by 
 
 The three classes involved utilizing the following Python tools:
 
-# **.** Import
+**.** Import
 
-# **.** Exceptions
+**.** Exceptions
 
 **.** Private attributes
 
