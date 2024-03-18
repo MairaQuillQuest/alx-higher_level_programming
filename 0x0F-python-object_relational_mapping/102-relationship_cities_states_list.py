@@ -1,20 +1,24 @@
 #!/usr/bin/python3
-# Lists all City objects from the database hbtn_0e_101_usa.
-# Usage: ./102-relationship_cities_states_list.py <mysql username> /
-#                                                 <mysql password> /
-#                                                 <database name>
+"""Print first row in the state table
+"""
 import sys
+
+from sqlalchemy.orm import sessionmaker, joinedload
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from relationship_state import State
-from relationship_city import City
+
+from relationship_state import Base, State, City
 
 if __name__ == "__main__":
-    engine = create_engine("mysql+mysqldb://{}:{}@localhost/{}"
-                           .format(sys.argv[1], sys.argv[2], sys.argv[3]),
-                           pool_pre_ping=True)
-    Session = sessionmaker(bind=engine)
-    session = Session()
+    username = sys.argv[1]
+    password = sys.argv[2]
+    database = sys.argv[3]
 
-    for city in session.query(City).order_by(City.id):
-        print("{}: {} -> {}".format(city.id, city.name, city.state.name))
+    engine = create_engine(
+        'mysql+mysqldb://{}:{}@localhost/{}'
+        .format(username, password, database), pool_pre_ping=True
+    )
+    Session = sessionmaker(bind=engine)
+    with Session() as session:
+        query = session.query(City).order_by(City.id).all()
+        for city in query:
+            print(f"{city.id}: {city.name} -> {city.state.name}")
