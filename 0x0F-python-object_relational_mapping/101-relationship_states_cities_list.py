@@ -1,27 +1,33 @@
 #!/usr/bin/python3
-"""Print first row in the state table
 """
-import sys
+use table relationship to access and print city and state
+parameters given to script: username, password, database
+"""
 
-from sqlalchemy.orm import sessionmaker, joinedload
-from sqlalchemy import create_engine
-
+from sys import argv
 from relationship_state import Base, State
+from relationship_city import City
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
 
 if __name__ == "__main__":
-    username = sys.argv[1]
-    password = sys.argv[2]
-    database = sys.argv[3]
 
-    engine = create_engine(
-        'mysql+mysqldb://{}:{}@localhost/{}'
-        .format(username, password, database), pool_pre_ping=True
-    )
+    # make engine for database
+    user = argv[1]
+    passwd = argv[2]
+    db = argv[3]
+    engine = create_engine('mysql+mysqldb://{}:{}@localhost/{}'.
+                           format(user, passwd, db), pool_pre_ping=True)
+    Base.metadata.create_all(engine)
     Session = sessionmaker(bind=engine)
-    with Session() as session:
-        query = session.query(State).order_by(State.id).all()
-        for state in query:
-            print(f"{state.id}: {state.name}")
-            for city in state.cities:
-                print("    ", end='')
-                print(f"{city.id}: {city.name}")
+    session = Session()
+
+    # use table relationship to access and print city and state
+    rows = session.query(State).order_by(State.id).all()
+    for state in rows:
+        print("{}: {}".format(state.id, state.name))
+        for city in state.cities:
+            print("    {}: {}".format(city.id, city.name))
+
+    session.close()
