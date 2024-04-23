@@ -1,20 +1,42 @@
 #!/usr/bin/node
 const request = require('request');
-const url = 'https://swapi.co/api/films/' + process.argv[2];
-request(url, function (error, response, body) {
-  if (!error) {
-    let characters = JSON.parse(body).characters;
-    printCharacters(characters, 0);
-  }
-});
+const idFilm = process.argv[2];
+const url = 'https://swapi-api.hbtn.io/api/films/' + idFilm;
 
-function printCharacters (characters, index) {
-  request(characters[index], function (error, response, body) {
-    if (!error) {
-      console.log(JSON.parse(body).name);
-      if (index + 1 < characters.length) {
-        printCharacters(characters, index + 1);
-      }
+const myPromise = new Promise((resolve, reject) => {
+  request(url, (err, response, body) => {
+    if (err) {
+      reject(err);
+    } else if (response && response.statusCode === 200) {
+      const filmData = JSON.parse(body);
+      resolve(filmData.characters);
+    } else {
+      const errorCode = `Error: ${response.statusCode}`;
+      reject(errorCode);
     }
   });
-}
+});
+
+myPromise
+  .then((urlCharacters) => {
+    const charOrd = urlCharacters.map(urlChar => {
+      return new Promise((resolve, reject) => {
+        request(urlChar, (err, response, body) => {
+          if (err) {
+            reject(err);
+          } else if (response.statusCode === 200) {
+            const characterData = JSON.parse(body);
+            resolve(characterData.name);
+          } else {
+            const error = `Error: ${response.statusCode}`;
+            reject(error);
+          }
+        });
+      });
+    });
+    return Promise.all(charOrd);
+  })
+  .then(charOrd => {
+    charOrd.forEach(charName => console.log(charName));
+  })
+  .catch((err) => { console.log(err); });

@@ -1,16 +1,28 @@
 #!/usr/bin/node
 const request = require('request');
-request(process.argv[2], function (error, response, body) {
-  if (!error) {
-    const todos = JSON.parse(body);
-    let completed = {};
-    todos.forEach((todo) => {
-      if (todo.completed && completed[todo.userId] === undefined) {
-        completed[todo.userId] = 1;
-      } else if (todo.completed) {
-        completed[todo.userId] += 1;
+const url = process.argv[2];
+
+request(url, (err, response, body) => {
+  if (err) {
+    console.log(err);
+  } else if (response.statusCode === 200) {
+    let newKey;
+    let newValue;
+    const dExp = {};
+    const dIn = JSON.parse(body);
+    for (const dGet of dIn) {
+      if (dGet.completed) {
+        newKey = '' + dGet.userId;
+        if (!dExp[newKey]) {
+          dExp[newKey] = 1;
+        } else {
+          newValue = dExp[newKey];
+          dExp[newKey] = newValue + 1;
+        }
       }
-    });
-    console.log(completed);
+    }
+    console.log(dExp);
+  } else {
+    console.log(`Error: ${response.statusCode}`);
   }
 });
